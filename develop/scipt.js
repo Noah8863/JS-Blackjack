@@ -12,8 +12,12 @@
 //If the dealer and player has the same values after the user "Stands", show a notification "Push"
 //If the dealer has 17, don't draw anymore cards for the dealer and compare values
 
+//For each of the user buttons, there will be logic to allow certain buttons to be clicked based on the values on the table
+//If the users two inital cards are the same value, split will be allowed
+//Similarily, the double button will only be available before the 3rd card is delt
+
 //Displaying the total deck values. Suites aren't included as it doesn't matter when playing traditional blackjack.
-const deck = [
+let deck = [
   2,
   2,
   2,
@@ -67,10 +71,83 @@ const deck = [
   "Ace",
   "Ace",
 ];
+
+//Grab the buttons for each choice
 const dealHandBtn = document.querySelector(".dealHandBtn");
 const userBtns = document.querySelectorAll(".userBtns");
+const standBtn = document.getElementById("stand")
+const hitBtn = document.getElementById("hit")
+const doubleBtn = document.getElementById("double")
+const splitBtn = document.getElementById("split")
+
+let dealerArray = [];
+let userArray = [];
+
+//Grabbing the users and dealers card containers
+const dealersFirstCardContainer = document.getElementById("dealersFirstHand")
+const dealersSecondCardContainer = document.getElementById("dealersSecondHand")
+const usersFirstCardContainer = document.getElementById("playersFirstHand");
+const usersSecondCardContainer = document.getElementById("playersSecondHand");
 
 function dealCards() {
+  // Hide the "Deal Cards" button and show the user buttons
   dealHandBtn.classList.add("hidden");
   userBtns.forEach((btn) => btn.classList.remove("hidden"));
+
+  // Pick two random indices from the deck array
+  let dealerHandIndex1 = Math.floor(Math.random() * deck.length);
+  let dealerHandIndex2;
+  let userHandIndex1;
+  let userHandIndex2;
+
+  do {
+    dealerHandIndex2 = Math.floor(Math.random() * deck.length);
+    userHandIndex1 = Math.floor(Math.random() * deck.length);
+    userHandIndex2 = Math.floor(Math.random() * deck.length);
+  } while (dealerHandIndex2 === dealerHandIndex1);
+
+  // Return the values at the random indices
+  return [
+    deck[dealerHandIndex1],
+    deck[dealerHandIndex2],
+    deck[userHandIndex1],
+    deck[userHandIndex2],
+  ];
+}
+
+dealHandBtn.addEventListener("click", function () {
+  let randomValues = dealCards();
+  let dealerFirstCard = randomValues[0]
+  let usersFirstCard = randomValues[2]
+  let usersSecondCard = randomValues[3]
+
+  //set the dealers first card only
+  dealersFirstCardContainer.innerHTML = dealerFirstCard
+  //set the values for the users hand
+  usersFirstCardContainer.innerHTML = usersFirstCard
+  usersSecondCardContainer.innerHTML = usersSecondCard
+
+  console.log("Random values:", randomValues);
+
+  //Check if the two cards delt to the user are the same, if so, enable the split button
+  if (usersFirstCard === usersSecondCard){
+    splitBtn.classList.remove("disabled")
+    splitBtn.disabled = false
+  } else {
+    splitBtn.disabled = true
+  }
+});
+
+function stand() {
+
+
+}
+
+function hit() {}
+
+function double() {}
+
+function split() {
+  
+
 }
