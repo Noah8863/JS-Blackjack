@@ -8,25 +8,28 @@
   </head>
 
   <body>
-    <div class="container dealer-container">
-      <h2>Dealer Hand</h2>
-      <div class="hand">
-        <div class="card"></div>
-        <div class="card"></div>
+    <div class="container">
+      <div class="dealer-container">
+        <h2>Dealer Hand</h2>
+        <div class="hand">
+          <div class="card" id="houseFirstHand"></div>
+          <div class="card" id="houseSecondHand"></div>
+        </div>
       </div>
-    </div>
-    <div class="container player-container">
-      <h2>Player Hand</h2>
-      <div class="hand">
-        <div class="card"></div>
-        <div class="card"></div>
+      <div class="player-container">
+        <h2>Player Hand</h2>
+        <div class="hand">
+          <div class="card" id="playersFirstHand"></div>
+          <div class="card" id="playerseSecondHand"></div>
+        </div>
+        <div class="button-container hidden">
+          <button class="button userBtns hidden">Stand</button>
+          <button class="button userBtns hidden">Hit</button>
+          <button class="button userBtns hidden">Double</button>
+          <button class="button userBtns hidden">Split</button>
+          <button class="button dealHandBtn" onclick="dealCards()">Deal Cards</button>
+        </div>
       </div>
-    </div>
-    <div class="button-container">
-      <button class="button">Stand</button>
-      <button class="button">Hit</button>
-      <button class="button">Double</button>
-      <button class="button">Split</button>
     </div>
     <script src="./develop/scipt.js"></script>
   </body>
