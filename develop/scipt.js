@@ -88,6 +88,7 @@ const dealersFirstCardContainer = document.getElementById("dealersFirstHand")
 const dealersSecondCardContainer = document.getElementById("dealersSecondHand")
 const usersFirstCardContainer = document.getElementById("playersFirstHand");
 const usersSecondCardContainer = document.getElementById("playersSecondHand");
+const totalCount = document.getElementById("totalCount")
 
 function dealCards() {
   // Hide the "Deal Cards" button and show the user buttons
@@ -106,6 +107,7 @@ function dealCards() {
     userHandIndex2 = Math.floor(Math.random() * deck.length);
   } while (dealerHandIndex2 === dealerHandIndex1);
 
+  console.log("Dealer index is: " + dealerHandIndex1)
   // Return the values at the random indices
   return [
     deck[dealerHandIndex1],
@@ -127,7 +129,6 @@ dealHandBtn.addEventListener("click", function () {
   usersFirstCardContainer.innerHTML = usersFirstCard
   usersSecondCardContainer.innerHTML = usersSecondCard
 
-  console.log("Random values:", randomValues);
 
   //Check if the two cards delt to the user are the same, if so, enable the split button
   if (usersFirstCard === usersSecondCard){
@@ -136,14 +137,57 @@ dealHandBtn.addEventListener("click", function () {
   } else {
     splitBtn.disabled = true
   }
+  
+  compareValues(usersFirstCard, usersSecondCard)
+
 });
 
-function stand() {
+function compareValues(usersFirstCard, usersSecondCard){
+  //Set the values of the first 2 cards
+  let value1 = usersFirstCard
+  let value2 = usersSecondCard
 
+  switch (value1) {
+    case "J":
+    case "Q":
+    case "K":
+      value1 = 10;
+      break;
+    case "Ace":
+      value1 = 11;
+      break;
+  }
 
+  switch (value2) {
+    case "J":
+    case "Q":
+    case "K":
+      value2 = 10;
+      break;
+    case "Ace":
+      value2 = 11;
+      break;
+  }
+
+  console.log("Value 1: " + value1 + " Value 2: " + value2)
+  console.log(value1 + value2)
+  totalHandValue = value1 + value2
+  totalCount.innerHTML = "Total Value: " + totalHandValue
+
+  if (totalHandValue = 21){
+    alert("Black Jack!")
+  }
 }
 
-function hit() {}
+function stand() {
+  let randomValues = dealCards();
+  let dealerSecondCard = randomValues[1]
+  dealersSecondCardContainer.innerHTML = dealerSecondCard
+}
+
+function hit() {
+
+}
 
 function double() {}
 
