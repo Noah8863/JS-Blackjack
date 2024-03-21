@@ -81,8 +81,8 @@ const hitBtn = document.getElementById("hit");
 const doubleBtn = document.getElementById("double");
 const splitBtn = document.getElementById("split");
 
-let dealerArray = [];
-let userArray = [];
+let dealerHandArray = [];
+let userHandArray = [];
 
 //Grabbing the users and dealers card containers
 const dealersFirstCardContainer = document.getElementById("dealersFirstHand");
@@ -143,93 +143,98 @@ dealHandBtn.addEventListener("click", function () {
 
 function compareValues(usersFirstCard, usersSecondCard) {
   //Set the values of the first 2 cards
-  let value1 = usersFirstCard;
-  let value2 = usersSecondCard;
+  //Pass the values to the calculateCardValue function
+  let value1 = calculateCardValue(usersFirstCard);
+  let value2 = calculateCardValue(usersSecondCard);
 
-  switch (value1) {
-    case "J":
-    case "Q":
-    case "K":
-      value1 = 10;
-      break;
-    case "Ace":
-      value1 = 11;
-      break;
-  }
-
-  switch (value2) {
-    case "J":
-    case "Q":
-    case "K":
-      value2 = 10;
-      break;
-    case "Ace":
-      value2 = 11;
-      break;
-  }
+  //Push the inital cards that were dealt to the user into their hand array
+  userHandArray.push(value1, value2);
 
   console.log("Value 1: " + value1 + " Value 2: " + value2);
   console.log(value1 + value2);
-  totalHandValue = value1 + value2;
-  totalCount.innerHTML = "Total Value: " + totalHandValue;
+  console.log(userHandArray);
+
+  //Again, pass the user hand into the calculateHandValue function for cleaner code
+  let initalHandValue = calculateHandValue(userHandArray);
+
+  totalCount.innerHTML = "Total Value: " + initalHandValue;
 
   //Show black jack alert if 21 is drawn
-  if (totalHandValue === 21) {
+  if (initalHandValue === 21) {
     setTimeout(showBlackJack, 500);
   }
   function showBlackJack() {
     alert("Black Jack!");
   }
-
-  hitBtn.addEventListener("click", function () {
-  
-    let index = Math.floor(Math.random() * deck.length);
-    let newCardValue = deck[index]
-
-    switch (newCardValue) {
-      case "J":
-      case "Q":
-      case "K":
-        newCardValue = 10;
-        break;
-      case "Ace":
-        newCardValue = 11;
-        break;
-    }
-
-    // Get the player's hand container
-    let handContainer = document.querySelector(".playerHand");
-
-    // Create a new div element for the card
-    let newCard = document.createElement("div");
-    newCard.classList.add("card");
-    newCard.textContent = newCardValue; // Set the value of the card
-
-    // Append the new card to the hand container
-    handContainer.appendChild(newCard);
-
-    console.log(newCardValue)
-
-    if (value1 === "Ace" && totalHandValue > 21){
-      value1 = 1
-    }
-
-    if (value2 === "Ace" && totalHandValue > 21){
-      value2 = 1
-    }
-
-    if (newCardValue === "Ace" && totalHandValue > 21){
-      newCardValue = 1
-    }
-
-    //Make an array to add all the values
-    //For loop to continue adding values to the array
-    //calc the total array values once the user selects 'stand'
-    totalHandValue = value1 + value2 + newCardValue;
-
-    totalCount.innerHTML = "Total Value: " + totalHandValue;
-  });
 }
+
+function calculateCardValue(card) {
+  switch (card) {
+    case "J":
+    case "Q":
+    case "K":
+      return 10;
+    case "Ace":
+      return 11;
+    default:
+      return parseInt(card); // Convert numeric strings to numbers
+  }
+}
+
+function calculateHandValue(hand) {
+  return hand.reduce((total, card) => total + card, 0);
+}
+
+hitBtn.addEventListener("click", function () {
+  let index = Math.floor(Math.random() * deck.length);
+  let newCardValue = deck[index];
+
+  switch (newCardValue) {
+    case "J":
+    case "Q":
+    case "K":
+      newCardValue = 10;
+      break;
+    case "Ace":
+      newCardValue = 11;
+      break;
+  }
+
+  userArray.push(newCardValue);
+  console.log("Array after hit: " + userArray);
+
+  // Get the player's hand container
+  let handContainer = document.querySelector(".playerHand");
+
+  // Create a new div element for the card
+  let newCard = document.createElement("div");
+  newCard.classList.add("card");
+  newCard.textContent = newCardValue; // Set the value of the card
+
+  // Append the new card to the hand container
+  handContainer.appendChild(newCard);
+
+  console.log(newCardValue);
+
+  if (value1 === "Ace" && totalHandValue > 21) {
+    value1 = 1;
+  }
+
+  if (value2 === "Ace" && totalHandValue > 21) {
+    value2 = 1;
+  }
+
+  if (newCardValue === "Ace" && totalHandValue > 21) {
+    newCardValue = 1;
+  }
+
+  //Make an array to add all the values
+  //For loop to continue adding values to the array
+  //calc the total array values once the user selects 'stand'
+  totalHandValue = value1 + value2 + newCardValue;
+
+  totalCount.innerHTML = "Total Value: " + userArray;
+});
 
 function stand() {
   let randomValues = dealCards();
@@ -259,11 +264,16 @@ function hit() {
   //Calculate the new total value
   totalHandValue = usersFirstCard + usersSecondCard + newCard;
   totalCount.innerHTML = "Total Value: " + totalHandValue;
+
+  if (totalHandValue >= 22) {
+    hitBtn.classList.add("disabled");
+    hitBtn.disabled = true;
+  }
 }
 
-function checkForBlackJack(){
-  if (totalHandValue === 21){
-    alert("Black Jack!")
+function checkForBlackJack() {
+  if (totalHandValue === 21) {
+    alert("Black Jack!");
   }
 }
 
