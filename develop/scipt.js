@@ -167,6 +167,7 @@ function compareValues(usersFirstCard, usersSecondCard) {
   }
   function showBlackJack() {
     alert("Black Jack!");
+    location.reload(true);
   }
 }
 
@@ -208,10 +209,20 @@ hitBtn.addEventListener("click", function () {
     ...userHandArray,
     ...userHandAfterHit,
   ]);
+
   totalCount.innerHTML = "Total Value: " + handValueAfterHit;
 
   splitBtn.classList.add("disabled");
   splitBtn.disabled = true;
+
+  if (handValueAfterHit > 21){
+    setTimeout(showBust, 500)
+  }
+  function showBust(){
+    alert("Bust!")
+    location.reload(true);
+  }
+  
 });
 
 function stand() {
