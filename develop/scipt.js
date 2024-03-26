@@ -234,16 +234,6 @@ hitBtn.addEventListener("click", function () {
   splitBtn.classList.add("disabled");
   splitBtn.disabled = true;
 
-<<<<<<< HEAD
-  if (handValueAfterHit > 21){
-    setTimeout(showBust, 500)
-  }
-  function showBust(){
-    alert("Bust!")
-    location.reload(true);
-  }
-=======
->>>>>>> bb6e7bead1fc3f6d51a5a35edae22647e1597e83
   
 });
 
