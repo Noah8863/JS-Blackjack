@@ -75,11 +75,13 @@ let deck = [
 
 //Grab the buttons for each choice
 const dealHandBtn = document.querySelector(".dealHandBtn");
+const dealerHandContainer = document.getElementById("dealerHand")
 const userBtns = document.querySelectorAll(".userBtns");
 const standBtn = document.getElementById("stand");
 const hitBtn = document.getElementById("hit");
 const doubleBtn = document.getElementById("double");
 const splitBtn = document.getElementById("split");
+
 
 let dealerHandArray = [];
 let userHandArray = [];
@@ -132,6 +134,9 @@ dealHandBtn.addEventListener("click", function () {
   usersFirstCardContainer.innerHTML = usersFirstCard;
   usersSecondCardContainer.innerHTML = usersSecondCard;
 
+  //Show the first value in the dealers hand
+  dealerHandContainer.innerHTML = "Dealer Has: " + dealerFirstCard
+
   //Check if the two cards delt to the user are the same, if so, enable the split button
   if (usersFirstCard === usersSecondCard) {
     splitBtn.classList.remove("disabled");
@@ -139,6 +144,7 @@ dealHandBtn.addEventListener("click", function () {
   } else {
     splitBtn.disabled = true;
   }
+  
 
   compareValues(usersFirstCard, usersSecondCard);
 });
@@ -212,9 +218,23 @@ hitBtn.addEventListener("click", function () {
 
   totalCount.innerHTML = "Total Value: " + handValueAfterHit;
 
+
+  //TODO:Figure out a way to convert Ace to a 1 since we are returning 11 every time
+  if (handValueAfterHit > 21 && newCardValue == 11){
+    userHandAfterHit.pop[0];
+    newCardValueWithAce = 1
+    userHandAfterHit.push(newCardValueWithAce)
+    let handValueWithAce = calculateHandValue([
+      ...userHandArray,
+      ...userHandAfterHit,
+    ]);
+    totalCount.innerHTML = "Boop " + handValueWithAce;
+  }
+
   splitBtn.classList.add("disabled");
   splitBtn.disabled = true;
 
+<<<<<<< HEAD
   if (handValueAfterHit > 21){
     setTimeout(showBust, 500)
   }
@@ -222,22 +242,22 @@ hitBtn.addEventListener("click", function () {
     alert("Bust!")
     location.reload(true);
   }
+=======
+>>>>>>> bb6e7bead1fc3f6d51a5a35edae22647e1597e83
   
 });
 
 function stand() {
   let randomValues = dealCards();
+  let dealerFirstCard = randomValues[0];
   let dealerSecondCard = randomValues[1];
   dealersSecondCardContainer.innerHTML = dealerSecondCard;
+  
+  dealerTotalHand = dealerFirstCard + dealerSecondCard
+  dealerHandContainer.innerHTML = "Dealer Has: " + dealerTotalHand;
 }
 
 
-
-function checkForBlackJack() {
-  if (totalHandValue === 21) {
-    alert("Black Jack!");
-  }
-}
 
 function double() {}
 
