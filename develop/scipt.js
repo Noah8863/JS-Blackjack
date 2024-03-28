@@ -75,13 +75,12 @@ let deck = [
 
 //Grab the buttons for each choice
 const dealHandBtn = document.querySelector(".dealHandBtn");
-const dealerHandContainer = document.getElementById("dealerHand")
+const dealerHandContainer = document.getElementById("dealerHand");
 const userBtns = document.querySelectorAll(".userBtns");
 const standBtn = document.getElementById("stand");
 const hitBtn = document.getElementById("hit");
 const doubleBtn = document.getElementById("double");
 const splitBtn = document.getElementById("split");
-
 
 let dealerHandArray = [];
 let userHandArray = [];
@@ -123,8 +122,13 @@ function dealCards() {
 }
 
 dealHandBtn.addEventListener("click", function () {
+  var audio = document.getElementById("soundEffect");
+  audio.currentTime = 0; // Rewind to the beginning to allow multiple rapid plays
+  audio.play();
+
   let randomValues = dealCards();
   let dealerFirstCard = randomValues[0];
+  let dealerSecondCard = randomValues[1];
   let usersFirstCard = randomValues[2];
   let usersSecondCard = randomValues[3];
 
@@ -135,7 +139,7 @@ dealHandBtn.addEventListener("click", function () {
   usersSecondCardContainer.innerHTML = usersSecondCard;
 
   //Show the first value in the dealers hand
-  dealerHandContainer.innerHTML = "Dealer Has: " + dealerFirstCard
+  dealerHandContainer.innerHTML = "Dealer Has: " + dealerFirstCard;
 
   //Check if the two cards delt to the user are the same, if so, enable the split button
   if (usersFirstCard === usersSecondCard) {
@@ -144,23 +148,39 @@ dealHandBtn.addEventListener("click", function () {
   } else {
     splitBtn.disabled = true;
   }
-  
 
-  compareValues(usersFirstCard, usersSecondCard);
+  compareValues(
+    usersFirstCard,
+    usersSecondCard,
+    dealerFirstCard,
+    dealerSecondCard
+  );
 });
 
-function compareValues(usersFirstCard, usersSecondCard) {
+function compareValues(
+  usersFirstCard,
+  usersSecondCard,
+  dealerFirstCard,
+  dealerSecondCard
+) {
   //Set the values of the first 2 cards
   //Pass the values to the calculateCardValue function
   let value1 = calculateCardValue(usersFirstCard);
   let value2 = calculateCardValue(usersSecondCard);
 
+  let DealerValue = calculateCardValue(dealerFirstCard);
+  let DealerValue2 = calculateCardValue(dealerSecondCard);
+
   //Push the inital cards that were dealt to the user into their hand array
   userHandArray.push(value1, value2);
+
+  dealerHandArray.push(DealerValue, DealerValue2);
 
   console.log("Value 1: " + value1 + " Value 2: " + value2);
   console.log(value1 + value2);
   console.log(userHandArray);
+
+  console.log("This is the Dealers Value: " + dealerHandArray);
 
   //Again, pass the user hand into the calculateHandValue function for cleaner code
   let initalHandValue = calculateHandValue(userHandArray);
@@ -195,6 +215,10 @@ function calculateHandValue(hand) {
 }
 
 hitBtn.addEventListener("click", function () {
+  var audio = document.getElementById("soundEffect");
+  audio.currentTime = 0; // Rewind to the beginning to allow multiple rapid plays
+  audio.play();
+
   let index = Math.floor(Math.random() * deck.length);
   let newCardValue = calculateCardValue(deck[index]);
 
@@ -218,12 +242,11 @@ hitBtn.addEventListener("click", function () {
 
   totalCount.innerHTML = "Total Value: " + handValueAfterHit;
 
-
   //TODO:Figure out a way to convert Ace to a 1 since we are returning 11 every time
-  if (handValueAfterHit > 21 && newCardValue == 11){
+  if (handValueAfterHit > 21 && newCardValue == 11) {
     userHandAfterHit.pop[0];
-    newCardValueWithAce = 1
-    userHandAfterHit.push(newCardValueWithAce)
+    newCardValueWithAce = 1;
+    userHandAfterHit.push(newCardValueWithAce);
     let handValueWithAce = calculateHandValue([
       ...userHandArray,
       ...userHandAfterHit,
@@ -234,7 +257,16 @@ hitBtn.addEventListener("click", function () {
   splitBtn.classList.add("disabled");
   splitBtn.disabled = true;
 
-  
+  if (handValueAfterHit > 21) {
+    setTimeout(showBust, 500);
+  }
+  function showBust() {
+    var bustAudio = document.getElementById("bustSoundEffect");
+    bustAudio.currentTime = 0; // Rewind to the beginning to allow multiple rapid plays
+    bustAudio.play();
+    alert("Bust!");
+    location.reload(true);
+  }
 });
 
 function stand() {
@@ -242,12 +274,10 @@ function stand() {
   let dealerFirstCard = randomValues[0];
   let dealerSecondCard = randomValues[1];
   dealersSecondCardContainer.innerHTML = dealerSecondCard;
-  
-  dealerTotalHand = dealerFirstCard + dealerSecondCard
+
+  dealerTotalHand = dealerFirstCard + dealerSecondCard;
   dealerHandContainer.innerHTML = "Dealer Has: " + dealerTotalHand;
 }
-
-
 
 function double() {}
 
