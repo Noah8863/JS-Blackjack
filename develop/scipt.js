@@ -111,8 +111,6 @@ function dealCards() {
     userHandIndex2 = Math.floor(Math.random() * deck.length);
   } while (dealerHandIndex2 === dealerHandIndex1);
 
-  console.log("Dealer index is: " + dealerHandIndex1);
-  // Return the values at the random indices
   return [
     deck[dealerHandIndex1],
     deck[dealerHandIndex2],
@@ -195,6 +193,17 @@ function compareValues(
     alert("Black Jack!");
     location.reload(true);
   }
+
+  //if the stand button returns true, AKA clicked, pass down the values
+  standBtn.addEventListener("click", function () {
+
+    compareValues(
+      usersFirstCard,
+      usersSecondCard,
+      dealerFirstCard,
+      dealerSecondCard
+    );
+  });
 }
 
 function calculateCardValue(card) {
@@ -270,12 +279,12 @@ hitBtn.addEventListener("click", function () {
 });
 
 function stand() {
-  let randomValues = dealCards();
-  let dealerFirstCard = randomValues[0];
-  let dealerSecondCard = randomValues[1];
-  dealersSecondCardContainer.innerHTML = dealerSecondCard;
+  dealersSecondCardContainer.innerHTML = dealerHandArray[1];
 
-  dealerTotalHand = dealerFirstCard + dealerSecondCard;
+  console.log("Here is the first dealer card: " + dealerHandArray[0])
+  console.log("Stand function is called and here is the value in the array" + dealerHandArray[1])
+
+  dealerTotalHand = dealerHandArray[0] + dealerHandArray[1];
   dealerHandContainer.innerHTML = "Dealer Has: " + dealerTotalHand;
 }
 
