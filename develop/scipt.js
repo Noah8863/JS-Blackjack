@@ -86,6 +86,7 @@ let dealerHandArray = [];
 let userHandArray = [];
 //created a second array for better concatenating logic between the two arrays
 let userHandAfterHit = [];
+let dealerHandAfterStand = [];
 
 //Grabbing the users and dealers card containers
 const dealersFirstCardContainer = document.getElementById("dealersFirstHand");
@@ -174,12 +175,6 @@ function compareValues(
 
   dealerHandArray.push(DealerValue, DealerValue2);
 
-  console.log("Value 1: " + value1 + " Value 2: " + value2);
-  console.log(value1 + value2);
-  console.log(userHandArray);
-
-  console.log("This is the Dealers Value: " + dealerHandArray);
-
   //Again, pass the user hand into the calculateHandValue function for cleaner code
   let initalHandValue = calculateHandValue(userHandArray);
 
@@ -190,20 +185,14 @@ function compareValues(
     setTimeout(showBlackJack, 500);
   }
   function showBlackJack() {
-    alert("Black Jack!");
-    location.reload(true);
+    var blackjackVoice = document.getElementById("blackjack");
+    blackjackVoice.currentTime = 0; // Rewind to the beginning to allow multiple rapid plays
+    blackjackVoice.play();
+      setTimeout(function () {
+        alert("Dealer won");
+        location.reload(true)
+      }, 800)
   }
-
-  //if the stand button returns true, AKA clicked, pass down the values
-  standBtn.addEventListener("click", function () {
-
-    compareValues(
-      usersFirstCard,
-      usersSecondCard,
-      dealerFirstCard,
-      dealerSecondCard
-    );
-  });
 }
 
 function calculateCardValue(card) {
@@ -281,11 +270,39 @@ hitBtn.addEventListener("click", function () {
 function stand() {
   dealersSecondCardContainer.innerHTML = dealerHandArray[1];
 
-  console.log("Here is the first dealer card: " + dealerHandArray[0])
-  console.log("Stand function is called and here is the value in the array" + dealerHandArray[1])
-
   dealerTotalHand = dealerHandArray[0] + dealerHandArray[1];
   dealerHandContainer.innerHTML = "Dealer Has: " + dealerTotalHand;
+
+  //grab the players hand once they are done hitting for cards
+  let playersFinalHand = calculateHandValue([
+    ...userHandArray,
+    ...userHandAfterHit,
+  ]);
+
+    if (dealerTotalHand > playersFinalHand) {
+      var playerWonAudio = document.getElementById("bustSoundEffect");
+      playerWonAudio.currentTime = 0; // Rewind to the beginning to allow multiple rapid plays
+      playerWonAudio.play();
+      setTimeout(function () {
+        alert("Dealer won");
+        location.reload(true);
+      }, 800)
+    } else if (playersFinalHand > dealerTotalHand) {
+      var playerWonAudio = document.getElementById("playerWonSoundEffect1");
+      playerWonAudio.currentTime = 0; // Rewind to the beginning to allow multiple rapid plays
+      playerWonAudio.play();
+      var playerWonAudio = document.getElementById("playerWonSoundEffect2");
+      playerWonAudio.currentTime = 0; // Rewind to the beginning to allow multiple rapid plays
+      playerWonAudio.play();
+      setTimeout(function () {
+        alert("Player won");
+        location.reload(true);
+      }, 200)
+      
+    } else {
+      alert("Push");
+      location.reload(true);
+    }
 }
 
 function double() {}
