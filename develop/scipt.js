@@ -81,6 +81,11 @@ const standBtn = document.getElementById("stand");
 const hitBtn = document.getElementById("hit");
 const doubleBtn = document.getElementById("double");
 const splitBtn = document.getElementById("split");
+const closeBtn = document.getElementById("closeButton");
+const closeWonBtn = document.getElementById("closeWonButton");
+const lostMessage = document.getElementById("lostMessage")
+const wonMessage = document.getElementById("wonMessage")
+
 
 let dealerHandArray = [];
 let userHandArray = [];
@@ -258,14 +263,20 @@ hitBtn.addEventListener("click", function () {
   splitBtn.disabled = true;
 
   if (handValueAfterHit > 21) {
-    setTimeout(showBust, 200);
+    setTimeout(showBustAlert, 200);
   }
-  function showBust() {
+  function showBustAlert() {
+    document.getElementById("customAlert").classList.remove("hidden");
+    lostMessage.innerHTML = "Bust!"
+    // Play bust sound effect
     var bustAudio = document.getElementById("bustSoundEffect");
     bustAudio.currentTime = 0; // Rewind to the beginning to allow multiple rapid plays
     bustAudio.play();
-    alert("Bust!");
-    location.reload(true);
+
+    closeBtn.addEventListener("click", function () {
+      document.getElementById("customAlert").classList.add("hidden");
+      location.reload(true);
+    });
   }
 });
 
@@ -280,49 +291,58 @@ function stand() {
     ...userHandAfterHit,
   ]);
 
-  if(dealerTotalHand > playersFinalHand){
+  if (dealerTotalHand > playersFinalHand) {
     var playerWonAudio = document.getElementById("bustSoundEffect");
+    lostMessage.innerHTML = "Dealer Won"
     playerWonAudio.currentTime = 0; // Rewind to the beginning to allow multiple rapid plays
     playerWonAudio.play();
     setTimeout(function () {
-      alert("Dealer won");
+      document.getElementById("customAlert").classList.remove("hidden");
+    // Play bust sound effect
+    var bustAudio = document.getElementById("bustSoundEffect");
+    bustAudio.currentTime = 0; // Rewind to the beginning to allow multiple rapid plays
+    bustAudio.play();
+
+    closeBtn.addEventListener("click", function () {
+      document.getElementById("customAlert").classList.add("hidden");
       location.reload(true);
+    });
     }, 800);
   } else {
     // If the dealer's hand is less than 17, keep drawing cards with a delay of 1 second
-  if (dealerTotalHand < 17) {
-    setTimeout(function drawCard() {
-      let index = Math.floor(Math.random() * deck.length);
-      let newCardForDealerValue = calculateCardValue(deck[index]);
+    if (dealerTotalHand < 17) {
+      setTimeout(function drawCard() {
+        let index = Math.floor(Math.random() * deck.length);
+        let newCardForDealerValue = calculateCardValue(deck[index]);
 
-      dealerHandAfterStand.push(newCardForDealerValue); // Push new card value after hitting
+        dealerHandAfterStand.push(newCardForDealerValue); // Push new card value after hitting
 
-      // Get the player's hand container
-      let dealerHandContainer = document.querySelector(".dealerHand");
-      let dealerHandCount = document.getElementById("dealerHandCount")
-      // Create a new div element for the card
-      let newCardForDealer = document.createElement("div");
-      newCardForDealer.classList.add("card");
-      newCardForDealer.textContent = newCardForDealerValue; // Set the value of the card
-      // Append the new card to the hand container
-      dealerHandContainer.appendChild(newCardForDealer);
+        // Get the player's hand container
+        let dealerHandContainer = document.querySelector(".dealerHand");
+        let dealerHandCount = document.getElementById("dealerHandCount");
+        // Create a new div element for the card
+        let newCardForDealer = document.createElement("div");
+        newCardForDealer.classList.add("card");
+        newCardForDealer.textContent = newCardForDealerValue; // Set the value of the card
+        // Append the new card to the hand container
+        dealerHandContainer.appendChild(newCardForDealer);
 
-      dealerTotalHand += newCardForDealerValue;
+        dealerTotalHand += newCardForDealerValue;
 
-      dealerHandCount.innerHTML = "Dealer Has: " + dealerTotalHand;
+        dealerHandCount.innerHTML = "Dealer Has: " + dealerTotalHand;
 
-      // If the dealer's hand is still less than 17, draw another card after 1 second
-      if (dealerTotalHand < 17) {
-        setTimeout(drawCard, 1000); // Draw another card after 1 second
-      } else {
-        // Dealer's hand is now greater than or equal to 17
-        setTimeout(finishDealerTurn(playersFinalHand), 500);
-      }
-    }, 400); // Initial delay before drawing the first card
-  } else {
-    // Dealer's hand is already greater than or equal to 17
-    finishDealerTurn(playersFinalHand);
-  }
+        // If the dealer's hand is still less than 17, draw another card after 1 second
+        if (dealerTotalHand < 17) {
+          setTimeout(drawCard, 1000); // Draw another card after 1 second
+        } else {
+          // Dealer's hand is now greater than or equal to 17
+          setTimeout(finishDealerTurn(playersFinalHand), 500);
+        }
+      }, 400); // Initial delay before drawing the first card
+    } else {
+      // Dealer's hand is already greater than or equal to 17
+      finishDealerTurn(playersFinalHand);
+    }
   }
 }
 
@@ -344,8 +364,13 @@ function finishDealerTurn(playersFinalHand) {
     playerWonAudio.currentTime = 0; // Rewind to the beginning to allow multiple rapid plays
     playerWonAudio.play();
     setTimeout(function () {
-      alert("Player won");
-      location.reload(true);
+      wonMessage.innerHTML = "You Won!"
+      document.getElementById("customWonAlert").classList.remove("hidden");
+
+      closeWonBtn.addEventListener("click", function () {
+        document.getElementById("customWonAlert").classList.add("hidden");
+        location.reload(true);
+      });
     }, 400);
   } else {
     var playerWonAudio = document.getElementById("push");
