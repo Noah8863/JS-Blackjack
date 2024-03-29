@@ -75,7 +75,7 @@ let deck = [
 
 //Grab the buttons for each choice
 const dealHandBtn = document.querySelector(".dealHandBtn");
-const dealerHandContainer = document.getElementById("dealerHand");
+const dealerHandContainer = document.getElementById("dealerHandCount");
 const userBtns = document.querySelectorAll(".userBtns");
 const standBtn = document.getElementById("stand");
 const hitBtn = document.getElementById("hit");
@@ -191,7 +191,7 @@ function compareValues(
     blackjackVoice.currentTime = 0; // Rewind to the beginning to allow multiple rapid plays
     blackjackVoice.play();
     setTimeout(function () {
-      alert("Dealer won");
+      alert("Black Jack!");
       location.reload(true);
     }, 800);
   }
@@ -269,63 +269,6 @@ hitBtn.addEventListener("click", function () {
   }
 });
 
-// function stand() {
-//   dealersSecondCardContainer.innerHTML = dealerHandArray[1];
-
-//   dealerTotalHand = dealerHandArray[0] + dealerHandArray[1];
-//   dealerHandContainer.innerHTML = "Dealer Has: " + dealerTotalHand;
-
-//   //grab the players hand once they are done hitting for cards
-//   let playersFinalHand = calculateHandValue([
-//     ...userHandArray,
-//     ...userHandAfterHit,
-//   ]);
-
-//   if (dealerTotalHand < 17) {
-
-//     let index = Math.floor(Math.random() * deck.length);
-//     let newCardForDealerValue = calculateCardValue(deck[index]);
-
-//     dealerHandAfterStand.push(newCardForDealerValue); // Push new card value after hitting
-//     console.log("Array after hit: " + dealerHandAfterStand);
-
-//     // Get the player's hand container
-//     let dealerHandContainer = document.querySelector(".dealerHand");
-//     // Create a new div element for the card
-//     let newCardForDealer = document.createElement("div");
-//     newCardForDealer.classList.add("card");
-//     newCardForDealer.textContent = newCardForDealerValue; // Set the value of the card
-//     // Append the new card to the hand container
-//     dealerHandContainer.appendChild(newCardForDealer);
-//     console.log(newCardForDealerValue);
-
-//     if (dealerTotalHand > playersFinalHand) {
-//       var playerWonAudio = document.getElementById("bustSoundEffect");
-//       playerWonAudio.currentTime = 0; // Rewind to the beginning to allow multiple rapid plays
-//       playerWonAudio.play();
-//       setTimeout(function () {
-//         alert("Dealer won");
-//         location.reload(true);
-//       }, 800);
-//     } else if (playersFinalHand > dealerTotalHand) {
-// var playerWonAudio = document.getElementById("playerWonSoundEffect1");
-// playerWonAudio.currentTime = 0; // Rewind to the beginning to allow multiple rapid plays
-// playerWonAudio.play();
-// var playerWonAudio = document.getElementById("playerWonSoundEffect2");
-// playerWonAudio.currentTime = 0; // Rewind to the beginning to allow multiple rapid plays
-// playerWonAudio.play();
-// setTimeout(function () {
-//   alert("Player won");
-//   location.reload(true);
-// }, 200);
-//     } else {
-//       alert("Push");
-//       location.reload(true);
-//     }
-
-//   }
-// }
-
 function stand() {
   dealersSecondCardContainer.innerHTML = dealerHandArray[1];
   dealerTotalHand = dealerHandArray[0] + dealerHandArray[1];
@@ -337,7 +280,16 @@ function stand() {
     ...userHandAfterHit,
   ]);
 
-  // If the dealer's hand is less than 17, keep drawing cards with a delay of 1 second
+  if(dealerTotalHand > playersFinalHand){
+    var playerWonAudio = document.getElementById("bustSoundEffect");
+    playerWonAudio.currentTime = 0; // Rewind to the beginning to allow multiple rapid plays
+    playerWonAudio.play();
+    setTimeout(function () {
+      alert("Dealer won");
+      location.reload(true);
+    }, 800);
+  } else {
+    // If the dealer's hand is less than 17, keep drawing cards with a delay of 1 second
   if (dealerTotalHand < 17) {
     setTimeout(function drawCard() {
       let index = Math.floor(Math.random() * deck.length);
@@ -347,6 +299,7 @@ function stand() {
 
       // Get the player's hand container
       let dealerHandContainer = document.querySelector(".dealerHand");
+      let dealerHandCount = document.getElementById("dealerHandCount")
       // Create a new div element for the card
       let newCardForDealer = document.createElement("div");
       newCardForDealer.classList.add("card");
@@ -355,6 +308,8 @@ function stand() {
       dealerHandContainer.appendChild(newCardForDealer);
 
       dealerTotalHand += newCardForDealerValue;
+
+      dealerHandCount.innerHTML = "Dealer Has: " + dealerTotalHand;
 
       // If the dealer's hand is still less than 17, draw another card after 1 second
       if (dealerTotalHand < 17) {
@@ -368,18 +323,19 @@ function stand() {
     // Dealer's hand is already greater than or equal to 17
     finishDealerTurn(playersFinalHand);
   }
+  }
 }
 
 // Function to finish the dealer's turn and determine the winner
 function finishDealerTurn(playersFinalHand) {
-  if (dealerTotalHand > playersFinalHand) {
+  if (dealerTotalHand > playersFinalHand && dealerTotalHand >= 21) {
     var playerWonAudio = document.getElementById("bustSoundEffect");
     playerWonAudio.currentTime = 0; // Rewind to the beginning to allow multiple rapid plays
     playerWonAudio.play();
     setTimeout(function () {
       alert("Dealer won");
       location.reload(true);
-    }, 800);
+    }, 400);
   } else if (dealerTotalHand < playersFinalHand) {
     var playerWonAudio = document.getElementById("playerWonSoundEffect1");
     playerWonAudio.currentTime = 0; // Rewind to the beginning to allow multiple rapid plays
@@ -390,10 +346,15 @@ function finishDealerTurn(playersFinalHand) {
     setTimeout(function () {
       alert("Player won");
       location.reload(true);
-    }, 200);
+    }, 400);
   } else {
-    alert("Push!");
-    location.reload(true);
+    var playerWonAudio = document.getElementById("push");
+    playerWonAudio.currentTime = 0; // Rewind to the beginning to allow multiple rapid plays
+    playerWonAudio.play();
+    setTimeout(function () {
+      alert("Push");
+      location.reload(true);
+    }, 400);
   }
 }
 
