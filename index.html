@@ -10,30 +10,43 @@
   <body>
     <div class="container">
       <audio id="soundEffect">
-        <source src="./develop/assets/flipcard-91468.mp3" type="audio/mpeg">
+        <source src="./develop/assets/flipcard-91468.mp3" type="audio/mpeg" />
         Your browser does not support the audio element.
       </audio>
 
       <audio id="bustSoundEffect">
-        <source src="./develop/assets/negative_beeps-6008.mp3" type="audio/mpeg">
+        <source
+          src="./develop/assets/negative_beeps-6008.mp3"
+          type="audio/mpeg"
+        />
       </audio>
 
       <audio id="playerWonSoundEffect1">
-        <source src="./develop/assets/cute-level-up-3-189853.mp3" type="audio/mpeg">
+        <source
+          src="./develop/assets/cute-level-up-3-189853.mp3"
+          type="audio/mpeg"
+        />
       </audio>
 
       <audio id="playerWonSoundEffect2">
-        <source src="./develop/assets/player-wins-94889.mp3" type="audio/mpeg">
+        <source
+          src="./develop/assets/player-wins-94889.mp3"
+          type="audio/mpeg"
+        />
       </audio>
 
       <audio id="blackjack">
-        <source src="./develop/assets/black-jack.mp3" type="audio/mpeg">
+        <source src="./develop/assets/black-jack.mp3" type="audio/mpeg" />
       </audio>
 
       <audio id="push">
-        <source src="./develop/assets/push.mp3" type="audio/mpeg">
+        <source src="./develop/assets/push.mp3" type="audio/mpeg" />
       </audio>
-      
+
+      <audio id="blackjack-song">
+        <source src="./develop/assets/level-win-6416.mp3" type="audio/mpeg" />
+      </audio>
+
       <div class="dealer-container">
         <h2>Dealer Hand</h2>
         <div class="dealerHand">
@@ -50,11 +63,19 @@
         </div>
         <div id="totalCount"></div>
         <div class="button-container hidden">
-          <button class="button userBtns hidden" id="stand" onclick="stand()">Stand</button>
+          <button class="button userBtns hidden" id="stand" onclick="stand()">
+            Stand
+          </button>
           <button class="button userBtns hidden" id="hit">Hit</button>
-          <button class="button userBtns hidden disabled" id="double">Double</button>
-          <button class="button userBtns hidden disabled" id="split">Split</button>
-          <button class="button dealHandBtn" onclick="dealCards()">Deal Cards</button>
+          <button class="button userBtns hidden disabled" id="double">
+            Double
+          </button>
+          <button class="button userBtns hidden disabled" id="split">
+            Split
+          </button>
+          <button class="button dealHandBtn" onclick="dealCards()">
+            Deal Cards
+          </button>
         </div>
       </div>
       <div id="customAlert" class="hidden">

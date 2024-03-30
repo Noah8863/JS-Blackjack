@@ -85,6 +85,7 @@ const closeBtn = document.getElementById("closeButton");
 const closeWonBtn = document.getElementById("closeWonButton");
 const lostMessage = document.getElementById("lostMessage");
 const wonMessage = document.getElementById("wonMessage");
+const dealerHadMessage = document.getElementById("dealerHadMessage")
 
 let dealerHandArray = [];
 let userHandArray = [];
@@ -194,13 +195,21 @@ function compareValues(
     setTimeout(showBlackJack, 500);
   }
   function showBlackJack() {
-    var blackjackVoice = document.getElementById("blackjack");
-    blackjackVoice.currentTime = 0; // Rewind to the beginning to allow multiple rapid plays
-    blackjackVoice.play();
     setTimeout(function () {
-      alert("Black Jack!");
-      location.reload(true);
-    }, 400);
+      var blackjackVoice = document.getElementById("blackjack");
+      blackjackVoice.currentTime = 0; // Rewind to the beginning to allow multiple rapid plays
+      blackjackVoice.play();
+      var blackjackSong = document.getElementById("blackjack-song");
+      blackjackSong.currentTime = 0; // Rewind to the beginning to allow multiple rapid plays
+      blackjackSong.play();
+      wonMessage.innerHTML = "Black Jack!";
+      document.getElementById("customWonAlert").classList.remove("hidden");
+
+      closeWonBtn.addEventListener("click", function () {
+        document.getElementById("customWonAlert").classList.add("hidden");
+        location.reload(true);
+      });
+    }, 200);
   }
 }
 
@@ -333,7 +342,7 @@ function stand() {
 
         // If the dealer's hand is still less than 17, draw another card after 1 second
         if (dealerTotalHand < 17) {
-          setTimeout(drawCard, 1200);
+          setTimeout(drawCard, 800);
         } else {
           // Dealer's hand is now greater than or equal to 17
           setTimeout(finishDealerTurn(playersFinalHand, dealerTotalHand), 500);
@@ -359,7 +368,7 @@ function finishDealerTurn(playersFinalHand, dealerTotalHand) {
       var playerWonAudio = document.getElementById("bustSoundEffect");
       playerWonAudio.currentTime = 0; // Rewind to the beginning to allow multiple rapid plays
       playerWonAudio.play();
-    }, 1000);
+    }, 700);
   } else if (dealerTotalHand < playersFinalHand) {
     var playerWonAudio = document.getElementById("playerWonSoundEffect1");
     playerWonAudio.currentTime = 0;
