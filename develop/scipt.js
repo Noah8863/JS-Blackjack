@@ -85,7 +85,10 @@ const closeBtn = document.getElementById("closeButton");
 const closeWonBtn = document.getElementById("closeWonButton");
 const lostMessage = document.getElementById("lostMessage");
 const wonMessage = document.getElementById("wonMessage");
-const dealerHadMessage = document.getElementById("dealerHadMessage")
+const dealerHadMessage = document.getElementById("dealerHadMessage");
+const playAgainBtn = document.getElementById("playAgainBtn");
+const increaseBetBtn = document.getElementById("increaseBetBtn");
+const decreaseBetBtn = document.getElementById("decreaseBetBtn");
 
 let dealerHandArray = [];
 let userHandArray = [];
@@ -93,12 +96,47 @@ let userHandArray = [];
 let userHandAfterHit = [];
 let dealerHandAfterStand = [];
 
+//setting the players Bank Roll
+let userBankRollContainer = document.getElementById("userBankRoll");
+let userBankRoll = 10;
+
+//setting the betting demonination
+let userBetAmountContainer = document.getElementById("userBetAmountContainer");
+let totalBetAmount = 0;
+
 //Grabbing the users and dealers card containers
 const dealersFirstCardContainer = document.getElementById("dealersFirstHand");
 const dealersSecondCardContainer = document.getElementById("dealersSecondHand");
 const usersFirstCardContainer = document.getElementById("playersFirstHand");
 const usersSecondCardContainer = document.getElementById("playersSecondHand");
 const totalCount = document.getElementById("totalCount");
+
+userBankRollContainer.innerHTML = "Bank Roll: " + userBankRoll;
+userBetAmountContainer.innerHTML = "Total Bet: " + totalBetAmount;
+
+function increaseBet() {
+  if (userBankRoll === 0) {
+    increaseBetBtn.disable(true);
+    increaseBetBtn.classList.add("disabled");
+  } else {
+    totalBetAmount += 1;
+    userBankRoll -= 1;
+    userBetAmountContainer.innerHTML = "Bank Roll: " + totalBetAmount;
+    userBankRollContainer.innerHTML = "Bank Roll: " + userBankRoll;
+  }
+}
+
+function decreaseBet() {
+  if (totalBetAmount === 0) {
+    decreaseBetBtn.disable(true);
+    decreaseBetBtn.classList.add("disabled");
+  } else {
+    totalBetAmount -= 1;
+    userBankRoll += 1;
+    userBetAmountContainer.innerHTML = "Bank Roll: " + totalBetAmount;
+    userBankRollContainer.innerHTML = "Bank Roll: " + userBankRoll;
+  }
+}
 
 function dealCards() {
   // Hide the "Deal Cards" button and show the user buttons
@@ -123,6 +161,11 @@ function dealCards() {
     deck[userHandIndex1],
     deck[userHandIndex2],
   ];
+}
+
+function playAgain() {
+  location.reload(true);
+  dealCards();
 }
 
 dealHandBtn.addEventListener("click", function () {
@@ -204,7 +247,8 @@ function compareValues(
       blackjackSong.play();
       wonMessage.innerHTML = "Black Jack!";
       document.getElementById("customWonAlert").classList.remove("hidden");
-
+      userBtns.forEach((btn) => btn.classList.add("hidden"));
+      playAgainBtn.classList.remove("hidden");
       closeWonBtn.addEventListener("click", function () {
         document.getElementById("customWonAlert").classList.add("hidden");
         location.reload(true);
@@ -284,7 +328,8 @@ hitBtn.addEventListener("click", function () {
     var bustAudio = document.getElementById("bustSoundEffect");
     bustAudio.currentTime = 0; // Rewind to the beginning to allow multiple rapid plays
     bustAudio.play();
-
+    userBtns.forEach((btn) => btn.classList.add("hidden"));
+    playAgainBtn.classList.remove("hidden");
     closeBtn.addEventListener("click", function () {
       document.getElementById("customAlert").classList.add("hidden");
       location.reload(true);
@@ -311,7 +356,8 @@ function stand() {
       var bustAudio = document.getElementById("bustSoundEffect");
       bustAudio.currentTime = 0; // Rewind to the beginning to allow multiple rapid plays
       bustAudio.play();
-
+      userBtns.forEach((btn) => btn.classList.add("hidden"));
+      playAgainBtn.classList.remove("hidden");
       closeBtn.addEventListener("click", function () {
         document.getElementById("customAlert").classList.add("hidden");
         location.reload(true);
@@ -323,9 +369,7 @@ function stand() {
       setTimeout(function drawCard() {
         let index = Math.floor(Math.random() * deck.length);
         let newCardForDealerValue = calculateCardValue(deck[index]);
-
         dealerHandAfterStand.push(newCardForDealerValue); // Push new card value after hitting
-
         // Get the player's hand container
         let dealerHandContainer = document.querySelector(".dealerHand");
         let dealerHandCount = document.getElementById("dealerHandCount");
@@ -359,6 +403,8 @@ function stand() {
 function finishDealerTurn(playersFinalHand, dealerTotalHand) {
   if (dealerTotalHand > playersFinalHand && dealerTotalHand <= 21) {
     setTimeout(function () {
+      userBtns.forEach((btn) => btn.classList.add("hidden"));
+      playAgainBtn.classList.remove("hidden");
       lostMessage.innerHTML = "Dealer Won";
       document.getElementById("customAlert").classList.remove("hidden");
       closeBtn.addEventListener("click", function () {
@@ -370,6 +416,8 @@ function finishDealerTurn(playersFinalHand, dealerTotalHand) {
       playerWonAudio.play();
     }, 700);
   } else if (dealerTotalHand < playersFinalHand) {
+    userBtns.forEach((btn) => btn.classList.add("hidden"));
+    playAgainBtn.classList.remove("hidden");
     var playerWonAudio = document.getElementById("playerWonSoundEffect1");
     playerWonAudio.currentTime = 0;
     playerWonAudio.play();
@@ -386,6 +434,8 @@ function finishDealerTurn(playersFinalHand, dealerTotalHand) {
       });
     }, 400);
   } else if (dealerTotalHand > 21 && playersFinalHand <= 21) {
+    userBtns.forEach((btn) => btn.classList.add("hidden"));
+    playAgainBtn.classList.remove("hidden");
     var playerWonAudio = document.getElementById("playerWonSoundEffect1");
     playerWonAudio.currentTime = 0;
     playerWonAudio.play();
@@ -402,6 +452,8 @@ function finishDealerTurn(playersFinalHand, dealerTotalHand) {
       });
     }, 400);
   } else {
+    userBtns.forEach((btn) => btn.classList.add("hidden"));
+    playAgainBtn.classList.remove("hidden");
     var playerWonAudio = document.getElementById("push");
     playerWonAudio.currentTime = 0;
     playerWonAudio.play();

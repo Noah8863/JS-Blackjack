@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Blackjack Game</title>
     <link rel="stylesheet" href="./develop/styles.css" />
+    <link rel="stylesheet" href="path/to/bootstrap/css/bootstrap.min.css" />
+    <link
+      rel="stylesheet"
+      href="path/to/font-awesome/css/font-awesome.min.css"
+    />
   </head>
 
   <body>
@@ -76,6 +81,15 @@
           <button class="button dealHandBtn" onclick="dealCards()">
             Deal Cards
           </button>
+          <button onclick="playAgain()" class="button hidden" id="playAgainBtn">
+            Play Again
+          </button>
+        </div>
+        <p id="userBankRoll">Bank Roll:</p>
+        <div>
+          <p id="userBetAmountContainer">Total Bet:</p>
+          <button class="button" id="increaseBetBtn" onclick="increaseBet()"><i class="fa-solid fa-arrow-up"></i></button>
+          <button class="button" id="decreaseBetBtn" onclick="decreaseBet()"><i class="fa-solid fa-arrow-down"></i></button>
         </div>
       </div>
       <div id="customAlert" class="hidden">
@@ -92,5 +106,9 @@
       </div>
     </div>
     <script src="./develop/scipt.js"></script>
+    <script
+      src="https://kit.fontawesome.com/78de80bbe9.js"
+      crossorigin="anonymous"
+    ></script>
   </body>
 </html>
