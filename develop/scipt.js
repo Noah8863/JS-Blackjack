@@ -89,6 +89,7 @@ const dealerHadMessage = document.getElementById("dealerHadMessage");
 const playAgainBtn = document.getElementById("playAgainBtn");
 const increaseBetBtn = document.getElementById("increaseBetBtn");
 const decreaseBetBtn = document.getElementById("decreaseBetBtn");
+const bettingContainer = document.getElementById("bettingContainer");
 
 let dealerHandArray = [];
 let userHandArray = [];
@@ -98,7 +99,12 @@ let dealerHandAfterStand = [];
 
 //setting the players Bank Roll
 let userBankRollContainer = document.getElementById("userBankRoll");
-let userBankRoll = 10;
+let userBankRoll = localStorage.getItem("userBankRoll");
+userBankRollContainer.textContent = userBankRoll;
+
+if (!userBankRoll) {
+  userBankRoll = 10;
+}
 
 //setting the betting demonination
 let userBetAmountContainer = document.getElementById("userBetAmountContainer");
@@ -142,6 +148,8 @@ function dealCards() {
   // Hide the "Deal Cards" button and show the user buttons
   dealHandBtn.classList.add("hidden");
   userBtns.forEach((btn) => btn.classList.remove("hidden"));
+
+  bettingContainer.classList.add("hidden");
 
   // Pick two random indices from the deck array
   let dealerHandIndex1 = Math.floor(Math.random() * deck.length);
@@ -249,6 +257,13 @@ function compareValues(
       document.getElementById("customWonAlert").classList.remove("hidden");
       userBtns.forEach((btn) => btn.classList.add("hidden"));
       playAgainBtn.classList.remove("hidden");
+
+      let blackJackWinning = totalBetAmount * 1.5;
+      userBankRoll += blackJackWinning;
+
+      userBankRollContainer.textContext = userBankRoll;
+      localStorage.setItem("userBankRoll", userBankRoll);
+
       closeWonBtn.addEventListener("click", function () {
         document.getElementById("customWonAlert").classList.add("hidden");
         location.reload(true);
@@ -330,6 +345,10 @@ hitBtn.addEventListener("click", function () {
     bustAudio.play();
     userBtns.forEach((btn) => btn.classList.add("hidden"));
     playAgainBtn.classList.remove("hidden");
+
+    userBankRoll -= totalBetAmount;
+    localStorage.setItem("userBankRoll", userBankRoll);
+
     closeBtn.addEventListener("click", function () {
       document.getElementById("customAlert").classList.add("hidden");
       location.reload(true);
@@ -358,6 +377,12 @@ function stand() {
       bustAudio.play();
       userBtns.forEach((btn) => btn.classList.add("hidden"));
       playAgainBtn.classList.remove("hidden");
+
+      
+      //set the new bank roll subtracted by the bet amount
+      userBankRoll -= totalBetAmount;
+      localStorage.setItem("userBankRoll", userBankRoll);
+
       closeBtn.addEventListener("click", function () {
         document.getElementById("customAlert").classList.add("hidden");
         location.reload(true);
@@ -402,6 +427,13 @@ function stand() {
 // Function to finish the dealer's turn and determine the winner
 function finishDealerTurn(playersFinalHand, dealerTotalHand) {
   if (dealerTotalHand > playersFinalHand && dealerTotalHand <= 21) {
+    
+    
+    //set the new bank roll subtracted by the bet amount
+    userBankRoll -= totalBetAmount;
+    localStorage.setItem("userBankRoll", userBankRoll);
+
+
     setTimeout(function () {
       userBtns.forEach((btn) => btn.classList.add("hidden"));
       playAgainBtn.classList.remove("hidden");
@@ -416,6 +448,11 @@ function finishDealerTurn(playersFinalHand, dealerTotalHand) {
       playerWonAudio.play();
     }, 700);
   } else if (dealerTotalHand < playersFinalHand) {
+    //set the new bank roll subtracted by the bet amount
+    userBankRoll += totalBetAmount;
+    localStorage.setItem("userBankRoll", userBankRoll);
+
+
     userBtns.forEach((btn) => btn.classList.add("hidden"));
     playAgainBtn.classList.remove("hidden");
     var playerWonAudio = document.getElementById("playerWonSoundEffect1");
