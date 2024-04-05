@@ -99,7 +99,7 @@ let dealerHandAfterStand = [];
 
 //setting the players Bank Roll
 let userBankRollContainer = document.getElementById("userBankRoll");
-let userBankRoll = localStorage.getItem("userBankRoll");
+let userBankRoll = 0;
 userBankRollContainer.textContent = userBankRoll;
 
 if (!userBankRoll) {
@@ -127,8 +127,8 @@ function increaseBet() {
   } else {
     totalBetAmount += 1;
     userBankRoll -= 1;
-    userBetAmountContainer.innerHTML = "Bank Roll: " + totalBetAmount;
     userBankRollContainer.innerHTML = "Bank Roll: " + userBankRoll;
+    userBetAmountContainer.innerHTML = "Total Roll: " + totalBetAmount;
   }
 }
 
@@ -139,8 +139,8 @@ function decreaseBet() {
   } else {
     totalBetAmount -= 1;
     userBankRoll += 1;
-    userBetAmountContainer.innerHTML = "Bank Roll: " + totalBetAmount;
     userBankRollContainer.innerHTML = "Bank Roll: " + userBankRoll;
+    userBetAmountContainer.innerHTML = "Total Roll: " + totalBetAmount;
   }
 }
 
@@ -149,7 +149,8 @@ function dealCards() {
   dealHandBtn.classList.add("hidden");
   userBtns.forEach((btn) => btn.classList.remove("hidden"));
 
-  bettingContainer.classList.add("hidden");
+  decreaseBetBtn.classList.add("hidden");
+  increaseBetBtn.classList.add("hidden");
 
   // Pick two random indices from the deck array
   let dealerHandIndex1 = Math.floor(Math.random() * deck.length);
@@ -289,7 +290,7 @@ function calculateHandValue(hand) {
   return hand.reduce((total, card) => total + card, 0);
 }
 
-hitBtn.addEventListener("click", function () {
+function hit () {
   var audio = document.getElementById("soundEffect");
   audio.currentTime = 0; // Rewind to the beginning to allow multiple rapid plays
   audio.play();
@@ -354,7 +355,7 @@ hitBtn.addEventListener("click", function () {
       location.reload(true);
     });
   }
-});
+};
 
 function stand() {
   dealersSecondCardContainer.innerHTML = dealerHandArray[1];
@@ -451,6 +452,8 @@ function finishDealerTurn(playersFinalHand, dealerTotalHand) {
     //set the new bank roll subtracted by the bet amount
     userBankRoll += totalBetAmount;
     localStorage.setItem("userBankRoll", userBankRoll);
+    console.log("This is the total bet amount: " + totalBetAmount)
+    console.log("This is the new user bank roll: " + userBankRoll)
 
 
     userBtns.forEach((btn) => btn.classList.add("hidden"));
@@ -501,4 +504,103 @@ function finishDealerTurn(playersFinalHand, dealerTotalHand) {
   }
 }
 
-function double() {}
+function double() {
+
+  var audio = document.getElementById("soundEffect");
+  audio.currentTime = 0; // Rewind to the beginning to allow multiple rapid plays
+  audio.play();
+
+  let index = Math.floor(Math.random() * deck.length);
+  let newCardValue = calculateCardValue(deck[index]);
+
+  splitBtn.classList.add("disabled");
+  hitBtn.classList.add("disabled");
+  standBtn.classList.add("disabled")
+
+  userHandAfterHit.push(newCardValue); // Push new card value after hitting
+  console.log("Array after hit: " + userHandAfterHit);
+
+  // Get the player's hand container
+  let handContainer = document.querySelector(".playerHand");
+  // Create a new div element for the card
+  let newCard = document.createElement("div");
+  newCard.classList.add("card");
+  newCard.textContent = newCardValue; // Set the value of the card
+  // Append the new card to the hand container
+  handContainer.appendChild(newCard);
+  console.log(newCardValue);
+
+  let handValueAfterHit = calculateHandValue([
+    ...userHandArray,
+    ...userHandAfterHit,
+  ]);
+
+  totalCount.innerHTML = "Total Value: " + handValueAfterHit;
+
+  dealersSecondCardContainer.innerHTML = dealerHandArray[1];
+  dealerTotalHand = dealerHandArray[0] + dealerHandArray[1];
+  dealerHandContainer.innerHTML = "Dealer Has: " + dealerTotalHand;
+
+  // Grab the player's final hand once they are done hitting for cards
+  let playersFinalHand = calculateHandValue([
+    ...userHandArray,
+    ...userHandAfterHit,
+  ]);
+
+  if (dealerTotalHand > playersFinalHand && dealerTotalHand >= 21) {
+    lostMessage.innerHTML = "Dealer Won";
+    setTimeout(function () {
+      document.getElementById("customAlert").classList.remove("hidden");
+      // Play bust sound effect
+      var bustAudio = document.getElementById("bustSoundEffect");
+      bustAudio.currentTime = 0; // Rewind to the beginning to allow multiple rapid plays
+      bustAudio.play();
+      userBtns.forEach((btn) => btn.classList.add("hidden"));
+      playAgainBtn.classList.remove("hidden");
+
+      
+      //set the new bank roll subtracted by the bet amount
+      userBankRoll -= totalBetAmount;
+      localStorage.setItem("userBankRoll", userBankRoll);
+
+      closeBtn.addEventListener("click", function () {
+        document.getElementById("customAlert").classList.add("hidden");
+        location.reload(true);
+      });
+    }, 500);
+  } else {
+    // If the dealer's hand is less than 17, keep drawing cards with a delay of 1 second
+    if (dealerTotalHand < 17) {
+      setTimeout(function drawCard() {
+        let index = Math.floor(Math.random() * deck.length);
+        let newCardForDealerValue = calculateCardValue(deck[index]);
+        dealerHandAfterStand.push(newCardForDealerValue); // Push new card value after hitting
+        // Get the player's hand container
+        let dealerHandContainer = document.querySelector(".dealerHand");
+        let dealerHandCount = document.getElementById("dealerHandCount");
+        // Create a new div element for the card
+        let newCardForDealer = document.createElement("div");
+        newCardForDealer.classList.add("card");
+        newCardForDealer.textContent = newCardForDealerValue; // Set the value of the card
+        // Append the new card to the hand container
+        dealerHandContainer.appendChild(newCardForDealer);
+
+        dealerTotalHand += newCardForDealerValue;
+
+        dealerHandCount.innerHTML = "Dealer Has: " + dealerTotalHand;
+
+        // If the dealer's hand is still less than 17, draw another card after 1 second
+        if (dealerTotalHand < 17) {
+          setTimeout(drawCard, 800);
+        } else {
+          // Dealer's hand is now greater than or equal to 17
+          setTimeout(finishDealerTurn(playersFinalHand, dealerTotalHand), 500);
+        }
+      }, 600); // Initial delay before drawing the first card
+    } else {
+      // Dealer's hand is already greater than or equal to 17
+      finishDealerTurn(playersFinalHand, dealerTotalHand);
+    }
+  }
+
+}
